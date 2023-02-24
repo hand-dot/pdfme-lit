@@ -1,37 +1,35 @@
 import { LitElement, css, html } from 'lit';
-import templateJson from './template.json';
 import { generate } from '@pdfme/generator';
 
 export class PdfmeGenerator extends LitElement {
   static properties = {
-    template: {},
-    inputs: [],
+    template: { type: Object },
+    inputs: { type: Array },
   };
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
       :host {
+        height:100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     `;
 
   constructor() {
     super();
-    // Declare reactive properties
+    this.template = {};
+    this.inputs = [];
   }
 
   async _generatePdf() {
-    const template = templateJson;
-    const inputs = [
-      {
-        name: 'Pet Name?!',
-        age: '4 years',
-        sex: 'Male',
-        weight: '33 pounds',
-        breed: 'Mutt',
-        owner: 'https://pdfme.com/',
-      },
-    ];
+    console.log(this.template);
+    console.log(this.inputs);
 
-    const pdf = await generate({ template, inputs });
+    const pdf = await generate({
+      template: this.template,
+      inputs: this.inputs,
+    });
     const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
     window.open(URL.createObjectURL(blob));
   }
