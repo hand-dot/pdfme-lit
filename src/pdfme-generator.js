@@ -1,8 +1,11 @@
 import { LitElement, css, html } from 'lit';
+import templateJson from './template.json';
+import { generate } from '@pdfme/generator';
 
 export class PdfmeGenerator extends LitElement {
   static properties = {
-    name: {},
+    template: {},
+    inputs: [],
   };
   // Define scoped styles right with your component, in plain CSS
   static styles = css`
@@ -13,17 +16,28 @@ export class PdfmeGenerator extends LitElement {
   constructor() {
     super();
     // Declare reactive properties
-    this.name = 'World';
   }
 
-  // Render the UI as a function of component state
+  async _generatePdf() {
+    const template = templateJson;
+    const inputs = [
+      {
+        name: 'Pet Name?!',
+        age: '4 years',
+        sex: 'Male',
+        weight: '33 pounds',
+        breed: 'Mutt',
+        owner: 'https://pdfme.com/',
+      },
+    ];
+
+    const pdf = await generate({ template, inputs });
+    const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+    window.open(URL.createObjectURL(blob));
+  }
+
   render() {
     return html`<button @click="${this._generatePdf}">Generate PDF</button>`;
-  }
-
-  _generatePdf() {
-    alert();
-    console.log('_generatePdf !!');
   }
 }
 
